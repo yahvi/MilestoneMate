@@ -20,13 +20,15 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isCloudApi = Boolean(import.meta.env.VITE_API_URL);
+
   const verifyBackend = async () => {
     const res = await checkBackendHealth();
     if (res.ok) {
       setBackendStatus({
         checked: true,
         online: true,
-        details: `Backend API is healthy (Port 5000) • ${res.data.aiEnabled ? 'Gemini AI Ready' : 'AI Mode Active'}`,
+        details: `Backend API is healthy (${isCloudApi ? 'Render Cloud' : 'Port 5000'}) • ${res.data.aiEnabled ? 'Gemini AI Ready' : 'AI Mode Active'}`,
       });
     } else {
       setBackendStatus({
@@ -176,7 +178,7 @@ export default function Navbar() {
               title={backendStatus.details || 'Click to verify backend connection'}
             >
               <span className={`w-2 h-2 rounded-full ${backendStatus.online ? 'bg-emerald-600 animate-pulse' : 'bg-[#EB442C]'}`} />
-              <span>{backendStatus.online ? 'Backend :5000' : 'API Offline'}</span>
+              <span>{backendStatus.online ? (isCloudApi ? 'Backend Live' : 'Backend :5000') : 'API Offline'}</span>
             </button>
 
             {/* Hackathon Demo Switcher Pill with AI Video Link */}

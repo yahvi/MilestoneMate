@@ -13,7 +13,7 @@ services:
       - key: PORT
         value: 10000
       - key: CLIENT_URL
-        sync: false
+        value: https://milestone-mate-d837.vercel.app
       - key: JWT_SECRET
         generateValue: true
       - key: MONGODB_URI

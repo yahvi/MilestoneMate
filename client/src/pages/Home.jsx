@@ -197,7 +197,10 @@ export default function Home() {
             <div className="mt-3 pt-3 border-t border-[#DCCFBA]/60 flex items-center justify-between text-[11px] text-[#526058]">
               <span className="flex items-center gap-1.5 font-bold">
                 <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-                Backend Connected: <span className="text-[#0D2B1D]">Express API (Port 5000)</span>
+                Backend Connected:{' '}
+                <span className="text-[#0D2B1D]">
+                  {import.meta.env.VITE_API_URL ? 'Express Cloud API' : 'Express API (Port 5000)'}
+                </span>
               </span>
               <span className="font-semibold text-[#8C7A68]">
                 In-Memory Store Ready
