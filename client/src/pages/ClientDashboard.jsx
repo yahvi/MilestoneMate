@@ -3,13 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import {
   FolderKanban,
   CheckCircle2,
-  Clock,
   DollarSign,
   Search,
-  ExternalLink,
   ShieldCheck,
   CreditCard,
-  AlertCircle,
 } from 'lucide-react';
 import { projectService } from '../services/projectService.js';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -48,7 +45,7 @@ export default function ClientDashboard() {
       field: 'title',
       flex: 2,
       cellRenderer: (params) => (
-        <div className="font-semibold text-slate-900 flex items-center gap-2">
+        <div className="font-bold text-[#1C2826] flex items-center gap-2">
           <span>{params.value}</span>
         </div>
       ),
@@ -58,7 +55,7 @@ export default function ClientDashboard() {
       field: 'freelancerId.name',
       flex: 1.5,
       cellRenderer: (params) => (
-        <span className="text-slate-700 text-xs font-medium">
+        <span className="text-[#3D4C44] text-xs font-semibold">
           {params.value || params.data.freelancerId?.email}
         </span>
       ),
@@ -68,7 +65,7 @@ export default function ClientDashboard() {
       field: 'totalBudget',
       flex: 1,
       cellRenderer: (params) => (
-        <span className="font-bold text-slate-900">${params.value?.toLocaleString()} {params.data.currency}</span>
+        <span className="font-bold text-[#1C2826]">${params.value?.toLocaleString()} {params.data.currency}</span>
       ),
     },
     {
@@ -76,7 +73,7 @@ export default function ClientDashboard() {
       field: 'totalPaidAmount',
       flex: 1.2,
       cellRenderer: (params) => (
-        <span className="font-bold text-emerald-600">${params.value || 0}</span>
+        <span className="font-bold text-[#047857]">${params.value || 0}</span>
       ),
     },
     {
@@ -85,13 +82,13 @@ export default function ClientDashboard() {
       flex: 1.5,
       cellRenderer: (params) => (
         <div className="w-full flex items-center gap-2">
-          <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+          <div className="flex-1 bg-[#EFE8DC] rounded-full h-2 overflow-hidden border border-[#E0D5C5]">
             <div
-              className="bg-indigo-600 h-full rounded-full transition-all"
+              className="bg-linear-to-r from-[#047857] to-[#E34234] h-full rounded-full transition-all"
               style={{ width: `${params.value || 0}%` }}
             />
           </div>
-          <span className="text-[11px] font-bold text-indigo-700 w-8">{params.value || 0}%</span>
+          <span className="text-[11px] font-bold text-[#047857] w-8">{params.value || 0}%</span>
         </div>
       ),
     },
@@ -100,7 +97,7 @@ export default function ClientDashboard() {
       field: 'status',
       flex: 1.2,
       cellRenderer: (params) => (
-        <span className="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200">
+        <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#F0FAF4] text-[#047857] border border-emerald-300">
           {params.value}
         </span>
       ),
@@ -113,70 +110,70 @@ export default function ClientDashboard() {
       cellRenderer: (params) => (
         <button
           onClick={() => navigate(`/projects/${params.data._id}`)}
-          className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs rounded-lg transition"
+          className="px-3 py-1 bg-[#E34234] hover:bg-[#C82E18] text-white font-bold text-xs rounded-lg transition shadow-2xs"
         >
-          Review & Pay
+          Review &amp; Pay
         </button>
       ),
     },
   ];
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] bg-slate-50">
+    <div className="flex min-h-[calc(100vh-4rem)] bg-[#FAF7F2]">
       <Sidebar />
 
       <main className="flex-1 p-6 sm:p-8 max-w-7xl mx-auto space-y-8">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Client Project Cockpit</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h1 className="text-2xl font-black text-[#1C2826] tracking-tight">Client Project Cockpit</h1>
+          <p className="text-xs text-[#5A6860] mt-0.5">
             Welcome, {user?.name}. Inspect submitted deliverables, approve milestones, and release verified PayPal payments.
           </p>
         </div>
 
         {/* Metrics Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 bg-white rounded-2xl border border-slate-200 shadow-2xs">
+          <div className="p-5 bg-white rounded-2xl border border-[#EADBCE] shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">Active Contracts</span>
-              <div className="p-2 bg-indigo-50 rounded-xl text-indigo-600">
+              <span className="text-xs font-semibold text-[#5A6860]">Active Contracts</span>
+              <div className="p-2 bg-emerald-50 rounded-xl text-[#047857]">
                 <FolderKanban className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-2xl font-black text-slate-900 mt-2">{projects.length}</p>
-            <span className="text-[11px] text-slate-400 mt-1 block">{activeProjects} currently in progress</span>
+            <p className="text-2xl font-black text-[#1C2826] mt-2">{projects.length}</p>
+            <span className="text-[11px] text-[#6A7870] mt-1 block">{activeProjects} currently in progress</span>
           </div>
 
-          <div className="p-5 bg-white rounded-2xl border border-slate-200 shadow-2xs">
+          <div className="p-5 bg-white rounded-2xl border border-[#EADBCE] shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">Payments Released</span>
-              <div className="p-2 bg-emerald-50 rounded-xl text-emerald-600">
+              <span className="text-xs font-semibold text-[#5A6860]">Payments Released</span>
+              <div className="p-2 bg-emerald-100 rounded-xl text-[#047857]">
                 <DollarSign className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-2xl font-black text-emerald-600 mt-2">${totalPaid.toLocaleString()}</p>
-            <span className="text-[11px] text-emerald-600 font-medium mt-1 block">Verified PayPal Captures</span>
+            <p className="text-2xl font-black text-[#047857] mt-2">${totalPaid.toLocaleString()}</p>
+            <span className="text-[11px] text-[#047857] font-semibold mt-1 block">Verified PayPal Captures</span>
           </div>
 
-          <div className="p-5 bg-white rounded-2xl border border-slate-200 shadow-2xs">
+          <div className="p-5 bg-white rounded-2xl border border-[#EADBCE] shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">Total Budget</span>
-              <div className="p-2 bg-blue-50 rounded-xl text-blue-600">
+              <span className="text-xs font-semibold text-[#5A6860]">Total Budget</span>
+              <div className="p-2 bg-[#FFEAE6] rounded-xl text-[#E34234]">
                 <CreditCard className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-2xl font-black text-slate-900 mt-2">${totalCommitted.toLocaleString()}</p>
-            <span className="text-[11px] text-slate-400 mt-1 block">Committed milestone funds</span>
+            <p className="text-2xl font-black text-[#E34234] mt-2">${totalCommitted.toLocaleString()}</p>
+            <span className="text-[11px] text-[#6A7870] mt-1 block">Committed milestone funds</span>
           </div>
 
-          <div className="p-5 bg-white rounded-2xl border border-slate-200 shadow-2xs">
+          <div className="p-5 bg-white rounded-2xl border border-[#EADBCE] shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">Protection Model</span>
-              <div className="p-2 bg-purple-50 rounded-xl text-purple-600">
+              <span className="text-xs font-semibold text-[#5A6860]">Protection Model</span>
+              <div className="p-2 bg-emerald-50 rounded-xl text-[#047857]">
                 <ShieldCheck className="w-4 h-4" />
               </div>
             </div>
-            <p className="text-xs font-bold text-slate-900 mt-2">Stage-Gate Release</p>
-            <span className="text-[11px] text-slate-400 mt-1 block">Pay only after deliverable approval</span>
+            <p className="text-xs font-bold text-[#1C2826] mt-2">Stage-Gate Release</p>
+            <span className="text-[11px] text-[#6A7870] mt-1 block">Pay only after deliverable approval</span>
           </div>
         </div>
 
@@ -184,30 +181,30 @@ export default function ClientDashboard() {
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold text-slate-900">Assigned Projects</h2>
-              <span className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-semibold border border-slate-200">
+              <h2 className="text-base font-bold text-[#1C2826]">Assigned Projects</h2>
+              <span className="text-[10px] bg-[#F4EFE6] text-[#047857] px-2 py-0.5 rounded-full font-bold border border-[#EADBCE]">
                 AG Grid Table
               </span>
             </div>
             <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+              <Search className="w-4 h-4 absolute left-3 top-2.5 text-[#7F8D85]" />
               <input
                 type="text"
                 placeholder="Filter projects..."
                 value={quickFilter}
                 onChange={(e) => setQuickFilter(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs focus:ring-2 focus:ring-indigo-500 outline-hidden"
+                className="w-full pl-9 pr-3 py-1.5 bg-white border border-[#EADBCE] rounded-xl text-xs focus:ring-2 focus:ring-emerald-600 outline-hidden"
               />
             </div>
           </div>
 
           {loading ? (
-            <div className="py-16 text-center text-slate-400 text-xs">Loading projects...</div>
+            <div className="py-16 text-center text-[#7F8D85] text-xs">Loading projects...</div>
           ) : projects.length === 0 ? (
-            <div className="p-10 bg-white rounded-2xl border border-slate-200 text-center space-y-2">
-              <FolderKanban className="w-10 h-10 text-slate-300 mx-auto" />
-              <h3 className="text-sm font-bold text-slate-700">No Projects Assigned</h3>
-              <p className="text-xs text-slate-500">
+            <div className="p-10 bg-white rounded-2xl border border-[#EADBCE] text-center space-y-2">
+              <FolderKanban className="w-10 h-10 text-[#C4B7A6] mx-auto" />
+              <h3 className="text-sm font-bold text-[#1C2826]">No Projects Assigned</h3>
+              <p className="text-xs text-[#5A6860]">
                 When a freelancer invites your email ({user?.email}), the project will appear here.
               </p>
             </div>

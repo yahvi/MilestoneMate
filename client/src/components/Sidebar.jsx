@@ -6,9 +6,6 @@ import {
   Sparkles,
   CreditCard,
   User,
-  FolderKanban,
-  CheckSquare,
-  HelpCircle,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 
@@ -32,32 +29,34 @@ export default function Sidebar() {
   const navItems = isFreelancer ? freelancerNav : clientNav;
 
   return (
-    <aside className="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col shrink-0 min-h-[calc(100vh-4rem)]">
-      <div className="p-4 border-b border-slate-100">
+    <aside className="w-64 bg-[#F5F0E6] border-r border-[#E2D7C5] hidden md:flex flex-col shrink-0 min-h-[calc(100vh-4rem)]">
+      <div className="p-4 border-b border-[#E2D7C5] bg-[#EFE7D8]">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-indigo-500 to-purple-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+          <div className="w-10 h-10 rounded-xl bg-linear-to-br from-[#0D2B1D] to-[#184230] text-[#FAF6EC] font-black flex items-center justify-center text-sm shadow-sm border border-[#2E6B4E]/30">
             {user?.name?.charAt(0) || 'U'}
           </div>
           <div className="min-w-0">
-            <h4 className="text-xs font-bold text-slate-900 truncate">{user?.name}</h4>
-            <span className="inline-block text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full capitalize">
+            <h4 className="text-xs font-black text-[#0D2B1D] truncate">{user?.name}</h4>
+            <span className={`inline-block text-[10px] font-black px-2 py-0.5 rounded-full capitalize ${
+              isFreelancer ? 'text-[#0D2B1D] bg-[#E0EFE6]' : 'text-[#EB442C] bg-[#FFEAE6]'
+            }`}>
               {user?.role} Mode
             </span>
           </div>
         </div>
       </div>
 
-      <nav className="p-3 space-y-1 flex-1">
-        <p className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Navigation</p>
+      <nav className="p-3 space-y-1.5 flex-1">
+        <p className="px-3 py-2 text-[10px] font-black text-[#6F7D75] uppercase tracking-wider">Navigation</p>
         {navItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition ${
+              `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-black transition ${
                 isActive
-                  ? 'bg-indigo-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-50'
+                  ? 'bg-[#0D2B1D] text-[#FAF6EC] shadow-xs'
+                  : 'text-[#0D2B1D] hover:text-[#EB442C] hover:bg-[#EFE7D8]'
               }`
             }
           >
@@ -67,18 +66,18 @@ export default function Sidebar() {
         ))}
       </nav>
 
-      {/* Sponsor badge footer */}
-      <div className="p-4 border-t border-slate-100 bg-slate-50/70">
-        <div className="text-[11px] text-slate-500 space-y-1.5">
-          <p className="font-semibold text-slate-700">Hackathon Sponsors:</p>
+      {/* Sponsor badge footer in Warm Ivory, Emerald & Vermillion */}
+      <div className="p-4 border-t border-[#E2D7C5] bg-[#EFE7D8]">
+        <div className="text-[11px] text-[#526058] space-y-1.5">
+          <p className="font-black text-[#0D2B1D]">Hackathon Tech Stack:</p>
           <div className="flex flex-wrap gap-1.5 text-[10px]">
-            <span className="bg-white border border-slate-200 px-2 py-0.5 rounded-md font-medium text-indigo-700">
+            <span className="bg-[#FAF6EC] border border-[#DCCFBA] px-2 py-0.5 rounded-md font-black text-[#0D2B1D]">
               PayPal
             </span>
-            <span className="bg-white border border-slate-200 px-2 py-0.5 rounded-md font-medium text-violet-700">
+            <span className="bg-[#FAF6EC] border border-[#DCCFBA] px-2 py-0.5 rounded-md font-black text-[#EB442C]">
               Gemini AI
             </span>
-            <span className="bg-white border border-slate-200 px-2 py-0.5 rounded-md font-medium text-emerald-700">
+            <span className="bg-[#FAF6EC] border border-[#DCCFBA] px-2 py-0.5 rounded-md font-black text-[#184230]">
               AG Grid
             </span>
           </div>

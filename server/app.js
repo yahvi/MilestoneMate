@@ -15,15 +15,59 @@ dotenv.config();
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:5000',
+  'http://127.0.0.1:5000',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: (origin, callback) => {
+      // Allow requests with no origin (curl, mobile, server-side) or any localhost or vercel deployment
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.startsWith('http://localhost:') ||
+        origin.startsWith('http://127.0.0.1:') ||
+        origin.endsWith('.vercel.app')
+      ) {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     credentials: true,
   })
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Root welcome & Render health checks
+app.get('/', (req, res) => {
+  res.json({
+    service: 'MilestoneMate API',
+    status: 'online',
+    version: '1.0.0',
+    health: '/api/health',
+    endpoints: {
+      auth: '/api/auth',
+      projects: '/api/projects',
+      milestones: '/api/milestones',
+      payments: '/api/payments',
+      ai: '/api/ai',
+    },
+  });
+});
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', timestamp: new Date().toISOString() });
+});
 
 // Health Check
 app.get('/api/health', (req, res) => {

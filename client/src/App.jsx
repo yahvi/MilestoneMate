@@ -7,6 +7,9 @@ import Navbar from './components/Navbar.jsx';
 import Home from './pages/Home.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
+import Features from './pages/Features.jsx';
+import HowItWorks from './pages/HowItWorks.jsx';
+import DemoVideo from './pages/DemoVideo.jsx';
 import FreelancerDashboard from './pages/FreelancerDashboard.jsx';
 import ClientDashboard from './pages/ClientDashboard.jsx';
 import CreateProject from './pages/CreateProject.jsx';
@@ -21,8 +24,8 @@ function ProtectedRoute({ children, allowedRole = null }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="w-8 h-8 border-3 border-indigo-600 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F0E6]">
+        <div className="w-8 h-8 border-3 border-[#0D2B1D] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -51,12 +54,15 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <NotificationProvider>
-          <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+          <div className="min-h-screen bg-[#F5F0E6] flex flex-col font-sans">
             <Navbar />
             <div className="flex-1">
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Home />} />
+                <Route path="/features" element={<Features />} />
+                <Route path="/how-it-works" element={<HowItWorks />} />
+                <Route path="/demo-video" element={<DemoVideo />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
 

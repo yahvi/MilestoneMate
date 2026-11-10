@@ -27,7 +27,7 @@ export default function AGGridTable({
   );
 
   return (
-    <div className="w-full bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
+    <div className="w-full bg-white rounded-xl shadow-xs border border-[#EADBCE] overflow-hidden">
       <div style={{ height, width: '100%' }}>
         <AgGridReact
           rowData={rowData}

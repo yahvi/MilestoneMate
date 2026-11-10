@@ -1,7 +1,14 @@
 import axios from 'axios';
 
+const getBaseUrl = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl) return '/api';
+  const cleaned = envUrl.trim().replace(/\/+$/, '');
+  return cleaned.endsWith('/api') ? cleaned : `${cleaned}/api`;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -33,5 +40,15 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// Helper to verify backend connectivity
+export const checkBackendHealth = async () => {
+  try {
+    const res = await api.get('/health', { timeout: 4000 });
+    return { ok: true, data: res.data };
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+};
 
 export default api;

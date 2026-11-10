@@ -3,22 +3,126 @@
 @import "ag-grid-community/styles/ag-theme-alpine.css";
 
 @layer base {
-  body {
-    background-color: #f8fafc;
-    color: #0f172a;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  html, body {
+    background-color: #F5F0E6;
+    color: #0D2B1D;
+    font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 }
 
-/* Custom AG Grid modern theme styling */
+/* ========================================================
+   WARM IVORY, DEEP EMERALD & VERMILLION THEME
+   Inspired by vintage risograph / linocut editorial poster
+   ======================================================== */
+
+:root {
+  --canvas-ivory: #F5F0E6;
+  --cream-face: #FAF6EC;
+  --ink-emerald: #0D2B1D;
+  --mid-emerald: #184230;
+  --light-emerald: #2E6B4E;
+  --vermillion: #EB442C;
+  --deep-vermillion: #751307;
+  --border-parchment: #E2D7C5;
+}
+
+/* Custom AG Grid modern theme styling matching warm ivory & emerald */
 .ag-theme-alpine {
-  --ag-header-background-color: #f8fafc;
-  --ag-header-foreground-color: #475569;
-  --ag-header-cell-hover-background-color: #f1f5f9;
-  --ag-row-hover-color: #f8fafc;
-  --ag-selected-row-background-color: #eef2ff;
-  --ag-border-color: #e2e8f0;
+  --ag-header-background-color: #ECE3D2;
+  --ag-header-foreground-color: #0D2B1D;
+  --ag-header-cell-hover-background-color: #E2D7C5;
+  --ag-row-hover-color: #FAF6EC;
+  --ag-selected-row-background-color: #E0EFE6;
+  --ag-border-color: #DCCFBA;
   --ag-font-size: 12px;
   --ag-font-family: inherit;
   --ag-border-radius: 12px;
+}
+
+/* ========================================================
+   3D Words Typography System (Linocut Woodblock Shading)
+   Ivory front face + ink outline + deep emerald/vermillion hatched facet
+   paint-order: stroke fill keeps glyphs broad, open, and super readable!
+   ======================================================== */
+
+.linocut-3d-emerald {
+  font-family: "Syne", -apple-system, sans-serif;
+  font-weight: 900;
+  color: #FAF6EC;
+  -webkit-text-stroke: 1.5px #0D2B1D;
+  paint-order: stroke fill;
+  text-shadow:
+    1px 1px 0 #0D2B1D,
+    2px 2px 0 #184230,
+    3px 3px 0 #0D2B1D,
+    4px 4px 0 #184230,
+    5px 5px 0 #0A2217,
+    6px 6px 0 #0A2217,
+    7px 7px 0 #06140D,
+    8px 8px 0 #06140D,
+    10px 12px 3px rgba(13, 43, 29, 0.35),
+    14px 16px 14px rgba(13, 43, 29, 0.2);
+  display: inline-block;
+  letter-spacing: 0.05em;
+  transition: transform 0.25s ease, text-shadow 0.25s ease;
+}
+
+.linocut-3d-emerald:hover {
+  transform: translateY(-2px) scale(1.02);
+  text-shadow:
+    1px 1px 0 #0D2B1D,
+    2px 2px 0 #184230,
+    3px 3px 0 #0D2B1D,
+    4px 4px 0 #184230,
+    5px 5px 0 #0A2217,
+    6px 6px 0 #0A2217,
+    7px 7px 0 #06140D,
+    8px 8px 0 #06140D,
+    12px 14px 4px rgba(13, 43, 29, 0.4),
+    16px 18px 16px rgba(13, 43, 29, 0.25);
+}
+
+.linocut-3d-vermillion {
+  font-family: "Syne", -apple-system, sans-serif;
+  font-weight: 900;
+  color: #FAF6EC;
+  -webkit-text-stroke: 1.5px #EB442C;
+  paint-order: stroke fill;
+  text-shadow:
+    1px 1px 0 #EB442C,
+    2px 2px 0 #9E2414,
+    3px 3px 0 #EB442C,
+    4px 4px 0 #9E2414,
+    5px 5px 0 #751307,
+    6px 6px 0 #751307,
+    7px 7px 0 #4A0B04,
+    8px 8px 0 #4A0B04,
+    10px 12px 3px rgba(235, 68, 44, 0.35),
+    14px 16px 14px rgba(117, 19, 7, 0.25);
+  display: inline-block;
+  letter-spacing: 0.05em;
+  transition: transform 0.25s ease, text-shadow 0.25s ease;
+}
+
+.linocut-3d-vermillion:hover {
+  transform: translateY(-2px) scale(1.02);
+  text-shadow:
+    1px 1px 0 #EB442C,
+    2px 2px 0 #9E2414,
+    3px 3px 0 #EB442C,
+    4px 4px 0 #9E2414,
+    5px 5px 0 #751307,
+    6px 6px 0 #751307,
+    7px 7px 0 #4A0B04,
+    8px 8px 0 #4A0B04,
+    12px 14px 4px rgba(235, 68, 44, 0.4),
+    16px 18px 16px rgba(117, 19, 7, 0.3);
+}
+
+/* Subtle risograph printmaking stipple overlay */
+.risograph-texture {
+  background-image: radial-gradient(#C4B69E 0.75px, transparent 0.75px);
+  background-size: 14px 14px;
 }

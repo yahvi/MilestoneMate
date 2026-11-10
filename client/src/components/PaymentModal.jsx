@@ -70,22 +70,22 @@ export default function PaymentModal({ isOpen, onClose, milestone, project, onSu
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in">
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0A221B]/60 backdrop-blur-xs animate-in fade-in">
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl border border-[#EADBCE] overflow-hidden">
         {/* Header */}
-        <div className="px-6 py-4 bg-linear-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-indigo-700/60 rounded-lg">
-              <DollarSign className="w-5 h-5 text-indigo-300" />
+        <div className="px-6 py-4 bg-linear-to-r from-[#064E3B] via-[#047857] to-[#0A221B] text-white flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-emerald-800/80 rounded-lg">
+              <DollarSign className="w-5 h-5 text-emerald-200" />
             </div>
             <div>
-              <h2 className="text-base font-semibold">PayPal Milestone Payment</h2>
-              <p className="text-xs text-indigo-200">Sandbox Environment • Verified Capture</p>
+              <h2 className="text-base font-bold">PayPal Milestone Payment</h2>
+              <p className="text-xs text-emerald-100">Sandbox Environment • Verified Capture</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition"
+            className="p-1 rounded-lg text-emerald-200 hover:text-white hover:bg-white/10 transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -94,61 +94,61 @@ export default function PaymentModal({ isOpen, onClose, milestone, project, onSu
         {/* Content */}
         <div className="p-6 space-y-5">
           {/* Milestone Details Card */}
-          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200/80">
+          <div className="p-4 bg-[#FAF7F2] rounded-xl border border-[#EADBCE]">
             <div className="flex justify-between items-start mb-2">
               <div>
-                <span className="text-xs font-semibold text-indigo-600 uppercase tracking-wider">
+                <span className="text-xs font-bold text-[#047857] uppercase tracking-wider">
                   {project?.title || 'Project'}
                 </span>
-                <h3 className="text-sm font-bold text-slate-900 mt-0.5">{milestone.title}</h3>
+                <h3 className="text-sm font-bold text-[#1C2826] mt-0.5">{milestone.title}</h3>
               </div>
-              <span className="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-full">
+              <span className="px-2.5 py-1 bg-emerald-50 text-[#047857] border border-emerald-300 text-xs font-bold rounded-full">
                 {milestone.status}
               </span>
             </div>
 
-            <div className="mt-3 pt-3 border-t border-slate-200/80 flex items-baseline justify-between">
-              <span className="text-xs text-slate-500">Milestone Payment Amount:</span>
-              <span className="text-2xl font-extrabold text-slate-900">
-                ${milestone.budget} <span className="text-xs font-semibold text-slate-500">{project?.currency || 'USD'}</span>
+            <div className="mt-3 pt-3 border-t border-[#EADBCE] flex items-baseline justify-between">
+              <span className="text-xs text-[#5A6860] font-semibold">Milestone Payment Amount:</span>
+              <span className="text-2xl font-black text-[#047857]">
+                ${milestone.budget} <span className="text-xs font-bold text-[#5A6860]">{project?.currency || 'USD'}</span>
               </span>
             </div>
           </div>
 
           {error && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2.5 text-xs text-rose-700">
+            <div className="p-3 bg-[#FFEAE6] border border-[#FFC7BD] rounded-xl flex items-start gap-2.5 text-xs text-[#E34234] font-semibold">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
               <span>{error}</span>
             </div>
           )}
 
           {successData ? (
-            <div className="p-5 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-3">
-              <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto">
+            <div className="p-5 bg-emerald-50 border border-emerald-300 rounded-xl text-center space-y-3">
+              <div className="w-12 h-12 bg-emerald-100 text-[#047857] rounded-full flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-7 h-7" />
               </div>
               <div>
-                <h4 className="text-base font-bold text-emerald-900">Payment Successfully Verified!</h4>
-                <p className="text-xs text-emerald-700 mt-1">
+                <h4 className="text-base font-black text-[#047857]">Payment Successfully Verified!</h4>
+                <p className="text-xs text-[#065F46] mt-1 font-semibold">
                   ${successData.amount} {successData.currency} captured. Milestone status updated to Paid.
                 </p>
-                <div className="mt-2 text-[11px] font-mono text-emerald-800 bg-white/70 py-1 px-2 rounded-md inline-block">
+                <div className="mt-2 text-[11px] font-mono text-[#047857] bg-white py-1 px-2.5 rounded-md border border-emerald-200 inline-block">
                   Capture ID: {successData.paypalCaptureId || 'COMPLETED'}
                 </div>
               </div>
               <button
                 onClick={onClose}
-                className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition"
+                className="w-full py-2 bg-[#047857] hover:bg-[#065F46] text-white text-xs font-bold rounded-lg transition"
               >
-                Close & View Updated Project
+                Close &amp; View Updated Project
               </button>
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="flex items-center gap-2 text-xs text-slate-500 bg-blue-50/60 p-2.5 rounded-lg border border-blue-100">
-                <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
+              <div className="flex items-center gap-2 text-xs text-[#3D4C44] bg-[#FAF7F2] p-2.5 rounded-lg border border-[#EADBCE]">
+                <ShieldCheck className="w-4 h-4 text-[#047857] shrink-0" />
                 <span>
-                  Authoritative amount ($ {milestone.budget}) is enforced server-side directly from MongoDB to prevent client-side tampering.
+                  Authoritative amount (${milestone.budget}) is enforced server-side directly from the database to prevent client tampering.
                 </span>
               </div>
 
@@ -166,15 +166,15 @@ export default function PaymentModal({ isOpen, onClose, milestone, project, onSu
 
               {/* Fast Sandbox Demo Button */}
               <div className="relative flex py-1 items-center">
-                <div className="grow border-t border-slate-200"></div>
-                <span className="shrink mx-3 text-[11px] font-medium text-slate-400">OR FOR HACKATHON EVALUATORS</span>
-                <div className="grow border-t border-slate-200"></div>
+                <div className="grow border-t border-[#EADBCE]"></div>
+                <span className="shrink mx-3 text-[11px] font-bold text-[#8A9890]">OR FOR HACKATHON EVALUATION</span>
+                <div className="grow border-t border-[#EADBCE]"></div>
               </div>
 
               <button
                 onClick={handleSimulatedPay}
                 disabled={loading}
-                className="w-full py-2.5 px-4 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition shadow-xs disabled:opacity-50"
+                className="w-full py-2.5 px-4 bg-[#E34234] hover:bg-[#C82E18] text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition shadow-md shadow-[#E34234]/25 disabled:opacity-50"
               >
                 {loading ? (
                   <>
@@ -182,7 +182,7 @@ export default function PaymentModal({ isOpen, onClose, milestone, project, onSu
                   </>
                 ) : (
                   <>
-                    <ShieldCheck className="w-4 h-4 text-emerald-400" /> Instant Sandbox Payment & Verify
+                    <ShieldCheck className="w-4 h-4 text-white" /> 1-Click Sandbox Payment &amp; Verify
                   </>
                 )}
               </button>

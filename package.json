@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "MilestoneMate - AI-Powered Freelance Milestone Tracking & PayPal Payment Platform",
   "scripts": {
+    "dev": "node dev.js",
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
     "build:client": "cd client && npm run build",

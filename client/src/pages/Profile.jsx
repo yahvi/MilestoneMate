@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { User, Mail, Lock, Shield, CheckCircle2, AlertCircle, Save } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Save } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.jsx';
 import { authService } from '../services/authService.js';
 import Sidebar from '../components/Sidebar.jsx';
 
 export default function Profile() {
-  const { user, setUser, logout } = useAuth();
+  const { user, setUser } = useAuth();
   const [name, setName] = useState(user?.name || '');
   const [title, setTitle] = useState(user?.title || '');
   const [bio, setBio] = useState(user?.bio || '');
@@ -48,45 +48,47 @@ export default function Profile() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] bg-slate-50">
+    <div className="flex min-h-[calc(100vh-4rem)] bg-[#F5F0E6]">
       <Sidebar />
 
       <main className="flex-1 p-6 sm:p-8 max-w-4xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">Profile & Account Settings</h1>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <h1 className="text-2xl font-black text-[#0D2B1D] tracking-tight">Profile &amp; Account Settings</h1>
+          <p className="text-xs text-[#526058] mt-0.5">
             Manage your personal profile, PayPal sandbox settlement details, and security.
           </p>
         </div>
 
         {statusMsg.text && (
           <div
-            className={`p-3.5 rounded-xl border text-xs flex items-center gap-2 ${
+            className={`p-3.5 rounded-xl border text-xs flex items-center gap-2 font-bold ${
               statusMsg.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                : 'bg-rose-50 border-rose-200 text-rose-800'
+                ? 'bg-[#E0EFE6] border-emerald-300 text-[#0D2B1D]'
+                : 'bg-[#FFEAE6] border-[#FFD2CA] text-[#EB442C]'
             }`}
           >
             {statusMsg.type === 'success' ? (
-              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 shrink-0 text-[#0D2B1D]" />
             ) : (
-              <AlertCircle className="w-4 h-4 shrink-0" />
+              <AlertCircle className="w-4 h-4 shrink-0 text-[#EB442C]" />
             )}
             <span>{statusMsg.text}</span>
           </div>
         )}
 
         {/* Profile Card */}
-        <form onSubmit={handleUpdateProfile} className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-2xs space-y-5">
-          <div className="flex items-center gap-4 border-b border-slate-100 pb-5">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-600 text-white font-extrabold text-lg flex items-center justify-center shadow-sm">
+        <form onSubmit={handleUpdateProfile} className="bg-[#FAF6EC] p-6 sm:p-8 rounded-2xl border border-[#DCCFBA] shadow-2xs space-y-5">
+          <div className="flex items-center gap-4 border-b border-[#E2D7C5] pb-5">
+            <div className="w-14 h-14 rounded-2xl bg-[#0D2B1D] text-[#FAF6EC] font-black text-lg flex items-center justify-center shadow-sm border border-[#2E6B4E]/30">
               {user?.name?.charAt(0) || 'U'}
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">{user?.name}</h2>
-              <span className="text-xs text-slate-500">{user?.email}</span>
+              <h2 className="text-base font-black text-[#0D2B1D]">{user?.name}</h2>
+              <span className="text-xs text-[#526058]">{user?.email}</span>
               <div className="mt-1">
-                <span className="px-2.5 py-0.5 bg-indigo-50 text-indigo-700 rounded-md text-[10px] font-bold uppercase tracking-wider">
+                <span className={`px-2.5 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wider ${
+                  user?.role === 'freelancer' ? 'bg-[#E0EFE6] text-[#0D2B1D]' : 'bg-[#FFEAE6] text-[#EB442C]'
+                }`}>
                   {user?.role} Account
                 </span>
               </div>
@@ -95,47 +97,43 @@ export default function Profile() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+              <label className="block text-xs font-bold text-[#0D2B1D] mb-1">Full Name</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-hidden focus:bg-white focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 bg-[#F5F0E6] border border-[#DCCFBA] rounded-xl text-xs focus:ring-2 focus:ring-emerald-800 focus:bg-white outline-hidden font-medium"
               />
             </div>
-
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Professional Title / Headline</label>
+              <label className="block text-xs font-bold text-[#0D2B1D] mb-1">Professional Title</label>
               <input
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-hidden focus:bg-white focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-2 bg-[#F5F0E6] border border-[#DCCFBA] rounded-xl text-xs focus:ring-2 focus:ring-emerald-800 focus:bg-white outline-hidden font-medium"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
-              PayPal Sandbox Email (for receiving/sending payouts)
-            </label>
+            <label className="block text-xs font-bold text-[#0D2B1D] mb-1">PayPal Account Email (For Milestone Settlement)</label>
             <input
               type="email"
               value={paypalEmail}
               onChange={(e) => setPaypalEmail(e.target.value)}
-              placeholder="e.g. your-sandbox@sandbox.paypal.com"
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-hidden focus:bg-white focus:ring-2 focus:ring-indigo-500"
+              placeholder="seller-sandbox@paypal.com"
+              className="w-full px-3 py-2 bg-[#F5F0E6] border border-[#DCCFBA] rounded-xl text-xs focus:ring-2 focus:ring-emerald-800 focus:bg-white outline-hidden font-medium"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Bio / Profile Summary</label>
+            <label className="block text-xs font-bold text-[#0D2B1D] mb-1">Bio / Profile Summary</label>
             <textarea
               rows={3}
               value={bio}
               onChange={(e) => setBio(e.target.value)}
-              placeholder="A brief overview of your skills or organization..."
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-hidden focus:bg-white focus:ring-2 focus:ring-indigo-500 leading-relaxed"
+              className="w-full px-3 py-2 bg-[#F5F0E6] border border-[#DCCFBA] rounded-xl text-xs focus:ring-2 focus:ring-emerald-800 focus:bg-white outline-hidden leading-relaxed font-medium"
             />
           </div>
 
@@ -143,38 +141,36 @@ export default function Profile() {
             <button
               type="submit"
               disabled={saving}
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-xs transition flex items-center gap-1.5"
+              className="px-5 py-2.5 bg-[#0D2B1D] hover:bg-[#184230] text-[#FAF6EC] font-black rounded-xl text-xs shadow-md transition flex items-center gap-1.5 disabled:opacity-50 border border-[#0D2B1D]"
             >
-              <Save className="w-3.5 h-3.5" /> Save Changes
+              <Save className="w-4 h-4 text-[#EB442C]" /> Save Profile
             </button>
           </div>
         </form>
 
         {/* Change Password Card */}
-        <form onSubmit={handleUpdatePassword} className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
-          <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-indigo-600" /> Change Password
-          </h3>
+        <form onSubmit={handleUpdatePassword} className="bg-[#FAF6EC] p-6 sm:p-8 rounded-2xl border border-[#DCCFBA] shadow-2xs space-y-4">
+          <h3 className="text-sm font-black text-[#0D2B1D]">Change Security Password</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Current Password</label>
+              <label className="block text-xs font-bold text-[#0D2B1D] mb-1">Current Password</label>
               <input
                 type="password"
                 value={currentPassword}
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-hidden focus:bg-white"
+                className="w-full px-3 py-2 bg-[#F5F0E6] border border-[#DCCFBA] rounded-xl text-xs focus:ring-2 focus:ring-emerald-800 focus:bg-white outline-hidden font-medium"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">New Password</label>
+              <label className="block text-xs font-bold text-[#0D2B1D] mb-1">New Password</label>
               <input
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-hidden focus:bg-white"
+                className="w-full px-3 py-2 bg-[#F5F0E6] border border-[#DCCFBA] rounded-xl text-xs focus:ring-2 focus:ring-emerald-800 focus:bg-white outline-hidden font-medium"
               />
             </div>
           </div>
@@ -182,7 +178,7 @@ export default function Profile() {
           <div className="flex justify-end pt-2">
             <button
               type="submit"
-              className="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-xs transition"
+              className="px-5 py-2.5 bg-[#FAF6EC] hover:bg-[#EFE7D8] text-[#0D2B1D] font-black rounded-xl text-xs border border-[#DCCFBA] transition shadow-2xs"
             >
               Update Password
             </button>
