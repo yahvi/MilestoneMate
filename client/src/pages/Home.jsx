@@ -182,6 +182,13 @@ export default function Home() {
               </button>
             </div>
 
+            {loadingRole && (
+              <p className="mt-2.5 text-[11px] font-bold text-[#0D2B1D] bg-[#E0EFE6] border border-[#B7D8C4] rounded-lg px-3 py-1.5 flex items-center gap-2">
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#0D2B1D] shrink-0" />
+                <span>Connecting to backend server (up to ~30s if waking from idle)...</span>
+              </p>
+            )}
+
             {/* Watch AI Video Walkthrough Shortcut Banner */}
             <Link
               to="/demo-video"

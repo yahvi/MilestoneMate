@@ -9,7 +9,7 @@ const getBaseUrl = () => {
 
 const api = axios.create({
   baseURL: getBaseUrl(),
-  timeout: 30000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -45,7 +45,7 @@ api.interceptors.response.use(
 // Helper to verify backend connectivity
 export const checkBackendHealth = async () => {
   try {
-    const res = await api.get('/health', { timeout: 25000 });
+    const res = await api.get('/health', { timeout: 60000 });
     return { ok: true, data: res.data };
   } catch (err) {
     return { ok: false, error: err.message };

@@ -30,19 +30,29 @@ export default function Navbar() {
         online: true,
         details: `Backend API is healthy (${isCloudApi ? 'Render Cloud' : 'Port 5000'}) • ${res.data.aiEnabled ? 'Gemini AI Ready' : 'AI Mode Active'}`,
       });
+      return true;
     } else {
       setBackendStatus({
         checked: true,
         online: false,
-        details: `Could not reach backend API: ${res.error}`,
+        details: `Waking or unreachable backend API: ${res.error}`,
       });
+      return false;
     }
   };
 
   useEffect(() => {
-    verifyBackend();
+    let retryTimer;
+    verifyBackend().then((ok) => {
+      if (!ok) {
+        retryTimer = setTimeout(verifyBackend, 5000);
+      }
+    });
     const timer = setInterval(verifyBackend, 20000);
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+      if (retryTimer) clearTimeout(retryTimer);
+    };
   }, []);
 
   const handleSeed = async () => {
@@ -182,12 +192,30 @@ export default function Navbar() {
               className={`hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl text-[11px] font-black border transition cursor-pointer shadow-2xs ${
                 backendStatus.online
                   ? 'bg-[#E0EFE6] border-[#B7D8C4] text-[#0D2B1D] hover:bg-[#D3EBDC]'
+                  : !backendStatus.checked
+                  ? 'bg-amber-50 border-amber-200 text-amber-800 hover:bg-amber-100'
                   : 'bg-[#FFEAE6] border-[#FFD2CA] text-[#EB442C] hover:bg-[#FFDCD6]'
               }`}
-              title={backendStatus.details || 'Click to verify backend connection'}
+              title={backendStatus.details || 'Connecting to backend API...'}
             >
-              <span className={`w-2 h-2 rounded-full ${backendStatus.online ? 'bg-emerald-600 animate-pulse' : 'bg-[#EB442C]'}`} />
-              <span>{backendStatus.online ? (isCloudApi ? 'Backend Live' : 'Backend :5000') : 'API Offline'}</span>
+              <span
+                className={`w-2 h-2 rounded-full ${
+                  backendStatus.online
+                    ? 'bg-emerald-600 animate-pulse'
+                    : !backendStatus.checked
+                    ? 'bg-amber-500 animate-pulse'
+                    : 'bg-[#EB442C]'
+                }`}
+              />
+              <span>
+                {backendStatus.online
+                  ? isCloudApi
+                    ? 'Backend Live'
+                    : 'Backend :5000'
+                  : !backendStatus.checked
+                  ? 'Waking API...'
+                  : 'API Offline'}
+              </span>
             </button>
 
             {/* Hackathon Demo Switcher Pill with AI Video Link */}
