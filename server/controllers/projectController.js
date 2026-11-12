@@ -28,14 +28,16 @@ export const createProject = async (req, res, next) => {
       });
     }
 
+    const normalizedClientEmail = clientEmail.trim().toLowerCase();
+
     if (mongoose.connection.readyState === 1) {
-      const existingClient = await User.findOne({ email: clientEmail.toLowerCase() });
+      const existingClient = await User.findOne({ email: normalizedClientEmail });
       const project = await Project.create({
-        title,
+        title: title.trim(),
         description,
         freelancerId: req.user._id,
         clientId: existingClient ? existingClient._id : null,
-        clientEmail: clientEmail.toLowerCase(),
+        clientEmail: normalizedClientEmail,
         totalBudget: Number(totalBudget),
         currency: currency.toUpperCase(),
         startDate: startDate || new Date(),
@@ -66,15 +68,15 @@ export const createProject = async (req, res, next) => {
     } else {
       // In-Memory Mode
       const existingClient = mockDB.users.find(
-        (u) => u.email.toLowerCase() === clientEmail.toLowerCase()
+        (u) => u.email.trim().toLowerCase() === normalizedClientEmail
       );
       const newProj = {
         _id: '6600000000000000' + Math.floor(10000000 + Math.random() * 90000000),
-        title,
+        title: title.trim(),
         description,
         freelancerId: req.user._id.toString(),
         clientId: existingClient ? existingClient._id.toString() : null,
-        clientEmail: clientEmail.toLowerCase(),
+        clientEmail: normalizedClientEmail,
         totalBudget: Number(totalBudget),
         currency: currency.toUpperCase(),
         startDate: startDate || new Date(),
@@ -113,13 +115,15 @@ export const createProject = async (req, res, next) => {
 
 export const getProjects = async (req, res, next) => {
   try {
+    const normalizedUserEmail = (req.user.email || '').trim().toLowerCase();
+
     if (mongoose.connection.readyState === 1) {
       let query = {};
       if (req.user.role === 'freelancer') {
         query = { freelancerId: req.user._id };
       } else {
         query = {
-          $or: [{ clientId: req.user._id }, { clientEmail: req.user.email.toLowerCase() }],
+          $or: [{ clientId: req.user._id }, { clientEmail: normalizedUserEmail }],
         };
       }
 
@@ -152,7 +156,6 @@ export const getProjects = async (req, res, next) => {
     } else {
       // In-Memory Mode
       const userIdStr = req.user._id.toString();
-      const userEmail = req.user.email.toLowerCase();
 
       let userProjects = mockDB.projects.filter((p) => {
         if (req.user.role === 'freelancer') {
@@ -160,7 +163,7 @@ export const getProjects = async (req, res, next) => {
         } else {
           return (
             p.clientId?.toString() === userIdStr ||
-            p.clientEmail?.toLowerCase() === userEmail
+            p.clientEmail?.trim().toLowerCase() === normalizedUserEmail
           );
         }
       });

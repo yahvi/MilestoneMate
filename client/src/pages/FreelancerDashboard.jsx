@@ -23,9 +23,13 @@ export default function FreelancerDashboard() {
 
   useEffect(() => {
     loadProjects();
-  }, []);
+    const onFocus = () => loadProjects();
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [user?._id]);
 
   const loadProjects = async () => {
+    setLoading(true);
     try {
       const data = await projectService.getProjects();
       setProjects(data);

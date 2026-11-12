@@ -52,14 +52,19 @@ export default function Home() {
       const loggedUser = await demoLogin(role);
       navigate(loggedUser?.role === 'freelancer' ? '/dashboard/freelancer' : '/dashboard/client');
     } catch (err) {
-      console.warn('First login attempt failed, attempting to seed demo database:', err.message);
-      try {
-        await api.post('/seed');
-        const loggedUser = await demoLogin(role);
-        navigate(loggedUser?.role === 'freelancer' ? '/dashboard/freelancer' : '/dashboard/client');
-      } catch (seedErr) {
-        alert('Could not authenticate with backend: ' + seedErr.message);
+      if (err?.response?.status === 401) {
+        console.warn('Demo user missing, seeding demo database:', err.message);
+        try {
+          await api.post('/seed');
+          const loggedUser = await demoLogin(role);
+          navigate(loggedUser?.role === 'freelancer' ? '/dashboard/freelancer' : '/dashboard/client');
+          return;
+        } catch (seedErr) {
+          alert('Could not authenticate with backend: ' + seedErr.message);
+          return;
+        }
       }
+      alert('Could not connect to backend: ' + (err.message || 'Please retry in a few seconds.'));
     } finally {
       setLoadingRole(null);
     }

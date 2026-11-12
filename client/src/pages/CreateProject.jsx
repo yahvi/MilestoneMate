@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, AlertCircle, ArrowRight, Loader2, DollarSign, Mail } from 'lucide-react';
 import { projectService } from '../services/projectService.js';
+import { useAuth } from '../context/AuthContext.jsx';
 import Sidebar from '../components/Sidebar.jsx';
 
 export default function CreateProject() {
+  const { user } = useAuth();
+  const isDemoFreelancer = user?.email?.toLowerCase() === 'alex@milestonemate.dev';
+
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [clientEmail, setClientEmail] = useState('');
+  const [clientEmail, setClientEmail] = useState(isDemoFreelancer ? 'sarah@company.com' : '');
   const [totalBudget, setTotalBudget] = useState('');
   const [currency, setCurrency] = useState('USD');
   const [category, setCategory] = useState('E-commerce');
@@ -19,6 +23,12 @@ export default function CreateProject() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isDemoFreelancer && !clientEmail) {
+      setClientEmail('sarah@company.com');
+    }
+  }, [isDemoFreelancer]);
 
   const handlePreFillDemo = () => {
     setTitle('E-commerce Website Development');
@@ -35,16 +45,16 @@ export default function CreateProject() {
     e.preventDefault();
     setError('');
 
-    if (!title || !description || !clientEmail || !totalBudget) {
+    if (!title.trim() || !description.trim() || !clientEmail.trim() || !totalBudget) {
       return setError('Please fill in all required fields.');
     }
 
     setLoading(true);
     try {
       const project = await projectService.createProject({
-        title,
-        description,
-        clientEmail,
+        title: title.trim(),
+        description: description.trim(),
+        clientEmail: clientEmail.trim(),
         totalBudget: Number(totalBudget),
         currency,
         category,
@@ -135,6 +145,19 @@ export default function CreateProject() {
                   className="w-full pl-9 pr-3 py-2 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl text-xs focus:ring-2 focus:ring-emerald-600 focus:bg-white outline-hidden"
                 />
               </div>
+              {clientEmail.trim().toLowerCase() !== 'sarah@company.com' ? (
+                <button
+                  type="button"
+                  onClick={() => setClientEmail('sarah@company.com')}
+                  className="mt-1 text-[10px] font-bold text-[#E34234] hover:underline cursor-pointer text-left"
+                >
+                  Use Demo Client (sarah@company.com) so Sarah sees it
+                </button>
+              ) : (
+                <p className="mt-1 text-[10px] font-semibold text-[#047857]">
+                  Linked to Demo Client: sarah@company.com
+                </p>
+              )}
             </div>
 
             <div>

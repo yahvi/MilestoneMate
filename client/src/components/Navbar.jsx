@@ -63,9 +63,18 @@ export default function Navbar() {
       await demoLogin(role);
       navigate(role === 'freelancer' ? '/dashboard/freelancer' : '/dashboard/client');
     } catch (err) {
-      await handleSeed();
-      await demoLogin(role);
-      navigate(role === 'freelancer' ? '/dashboard/freelancer' : '/dashboard/client');
+      if (err?.response?.status === 401) {
+        try {
+          await api.post('/seed');
+          await demoLogin(role);
+          navigate(role === 'freelancer' ? '/dashboard/freelancer' : '/dashboard/client');
+          return;
+        } catch (seedErr) {
+          alert('Could not initialize demo accounts: ' + seedErr.message);
+          return;
+        }
+      }
+      alert('Could not switch account right now: ' + (err.message || 'Please retry in a few seconds.'));
     }
   };
 

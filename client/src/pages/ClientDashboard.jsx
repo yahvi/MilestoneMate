@@ -7,6 +7,7 @@ import {
   Search,
   ShieldCheck,
   CreditCard,
+  RefreshCw,
 } from 'lucide-react';
 import { projectService } from '../services/projectService.js';
 import { useAuth } from '../context/AuthContext.jsx';
@@ -22,9 +23,13 @@ export default function ClientDashboard() {
 
   useEffect(() => {
     loadProjects();
-  }, []);
+    const onFocus = () => loadProjects();
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [user?._id]);
 
   const loadProjects = async () => {
+    setLoading(true);
     try {
       const data = await projectService.getProjects();
       setProjects(data);
@@ -186,15 +191,27 @@ export default function ClientDashboard() {
                 AG Grid Table
               </span>
             </div>
-            <div className="relative w-full sm:w-64">
-              <Search className="w-4 h-4 absolute left-3 top-2.5 text-[#7F8D85]" />
-              <input
-                type="text"
-                placeholder="Filter projects..."
-                value={quickFilter}
-                onChange={(e) => setQuickFilter(e.target.value)}
-                className="w-full pl-9 pr-3 py-1.5 bg-white border border-[#EADBCE] rounded-xl text-xs focus:ring-2 focus:ring-emerald-600 outline-hidden"
-              />
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <div className="relative flex-1 sm:w-64">
+                <Search className="w-4 h-4 absolute left-3 top-2.5 text-[#7F8D85]" />
+                <input
+                  type="text"
+                  placeholder="Filter projects..."
+                  value={quickFilter}
+                  onChange={(e) => setQuickFilter(e.target.value)}
+                  className="w-full pl-9 pr-3 py-1.5 bg-white border border-[#EADBCE] rounded-xl text-xs focus:ring-2 focus:ring-emerald-600 outline-hidden"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={loadProjects}
+                disabled={loading}
+                className="px-3 py-1.5 bg-white hover:bg-[#FAF7F2] border border-[#EADBCE] rounded-xl text-xs font-bold text-[#1C2826] flex items-center gap-1.5 transition cursor-pointer disabled:opacity-50"
+                title="Refresh projects list"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 text-[#047857] ${loading ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">Refresh</span>
+              </button>
             </div>
           </div>
 
