@@ -103,7 +103,7 @@ export default function FreelancerDashboard() {
             ? 'bg-emerald-50 text-[#047857] border-emerald-300'
             : val === 'In Progress'
             ? 'bg-amber-50 text-amber-800 border-amber-300'
-            : val === 'Awaiting Client Approval'
+            : val === 'Rejected' || val === 'Awaiting Client Approval'
             ? 'bg-[#FFEAE6] text-[#E34234] border-[#FFC7BD]'
             : 'bg-[#F2ECE1] text-[#3D4C44] border-[#EADBCE]';
         return (

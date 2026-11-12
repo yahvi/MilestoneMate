@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Calendar,
   DollarSign,
@@ -14,6 +14,7 @@ import {
   CreditCard,
   ShieldCheck,
   Check,
+  X,
 } from 'lucide-react';
 import { projectService } from '../services/projectService.js';
 import { milestoneService } from '../services/milestoneService.js';
@@ -47,6 +48,11 @@ export default function ProjectDetails() {
   const [revisionMilestoneModal, setRevisionMilestoneModal] = useState(null);
   const [revisionFeedback, setRevisionFeedback] = useState('');
 
+  // Project invitation rejection modal
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('');
+
   useEffect(() => {
     loadProjectDetails();
   }, [id]);
@@ -66,6 +72,19 @@ export default function ProjectDetails() {
   const milestones = projectData?.milestones || [];
   const activities = projectData?.activities || [];
 
+  useEffect(() => {
+    if (
+      searchParams.get('action') === 'reject' &&
+      isClient &&
+      project &&
+      !project.clientApprovedPlan &&
+      project.status !== 'Rejected'
+    ) {
+      setRejectModalOpen(true);
+      setSearchParams({}, { replace: true });
+    }
+  }, [searchParams, isClient, project, setSearchParams]);
+
   // Client approves the overall project plan
   const handleApprovePlan = async () => {
     setActionLoading(true);
@@ -74,6 +93,25 @@ export default function ProjectDetails() {
       await loadProjectDetails();
     } catch (err) {
       alert('Failed to approve plan: ' + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  // Client rejects the project invitation
+  const handleRejectInvitation = async () => {
+    setActionLoading(true);
+    try {
+      await projectService.updateProject(id, {
+        status: 'Rejected',
+        clientApprovedPlan: false,
+        rejectionReason: rejectionReason.trim(),
+      });
+      setRejectModalOpen(false);
+      setRejectionReason('');
+      await loadProjectDetails();
+    } catch (err) {
+      alert('Failed to reject invitation: ' + (err.response?.data?.message || err.message));
     } finally {
       setActionLoading(false);
     }
@@ -154,6 +192,7 @@ export default function ProjectDetails() {
         return 'bg-[#FFEAE6] text-[#E34234] border-[#FFC7BD]';
       case 'Submitted for Review':
         return 'bg-amber-50 text-amber-800 border-amber-300';
+      case 'Rejected':
       case 'Revision Requested':
         return 'bg-[#FFEAE6] text-[#E34234] border-[#FFC7BD]';
       case 'In Progress':
@@ -259,8 +298,27 @@ export default function ProjectDetails() {
           </div>
         </div>
 
-        {/* Client Plan Approval Banner */}
-        {!project.clientApprovedPlan && (
+        {/* Client Plan Approval / Rejection Banner */}
+        {project.status === 'Rejected' ? (
+          <div className="p-5 bg-[#FFEAE6] border border-[#FFC7BD] text-[#1C2826] rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 bg-white border border-[#FFC7BD] rounded-xl shrink-0">
+                <AlertCircle className="w-6 h-6 text-[#E34234]" />
+              </div>
+              <div>
+                <h3 className="text-sm font-bold text-[#E34234]">Project Invitation Rejected</h3>
+                <p className="text-xs text-[#3D4C44] mt-0.5">
+                  {project.rejectionReason
+                    ? `Reason provided by client: "${project.rejectionReason}"`
+                    : 'The client declined this project invitation.'}
+                </p>
+              </div>
+            </div>
+            <span className="px-3 py-1 bg-white text-[#E34234] border border-[#FFC7BD] text-xs font-bold rounded-xl shrink-0">
+              Invitation Declined
+            </span>
+          </div>
+        ) : !project.clientApprovedPlan && (
           <div className="p-5 bg-linear-to-r from-[#064E3B] via-[#047857] to-[#0A221B] text-white rounded-2xl shadow-lg flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="p-2.5 bg-emerald-800/80 rounded-xl">
@@ -270,20 +328,29 @@ export default function ProjectDetails() {
                 <h3 className="text-sm font-bold">Proposed Milestone Roadmap Awaiting Client Approval</h3>
                 <p className="text-xs text-emerald-100">
                   {isClient
-                    ? 'Review the proposed breakdown below. Approve the roadmap to authorize the freelancer to begin work.'
+                    ? 'Review the proposed breakdown below. Approve to begin work or reject this invitation.'
                     : 'The client must approve this milestone breakdown before work proceeds.'}
                 </p>
               </div>
             </div>
 
             {isClient && (
-              <button
-                onClick={handleApprovePlan}
-                disabled={actionLoading}
-                className="px-5 py-2.5 bg-[#E34234] hover:bg-[#C82E18] text-white font-bold rounded-xl text-xs shadow-md transition flex items-center gap-2 shrink-0"
-              >
-                <Check className="w-4 h-4" /> Approve Milestone Plan
-              </button>
+              <div className="flex items-center gap-2.5 shrink-0">
+                <button
+                  onClick={() => setRejectModalOpen(true)}
+                  disabled={actionLoading}
+                  className="px-4 py-2.5 bg-[#E34234] hover:bg-[#C82E18] text-white font-bold rounded-xl text-xs shadow-md transition flex items-center gap-1.5"
+                >
+                  <X className="w-4 h-4" /> Reject Invitation
+                </button>
+                <button
+                  onClick={handleApprovePlan}
+                  disabled={actionLoading}
+                  className="px-5 py-2.5 bg-white hover:bg-emerald-50 text-[#065F46] font-bold rounded-xl text-xs shadow-md transition flex items-center gap-2"
+                >
+                  <Check className="w-4 h-4" /> Approve Milestone Plan
+                </button>
+              </div>
             )}
           </div>
         )}
@@ -598,6 +665,56 @@ export default function ProjectDetails() {
                 className="px-5 py-2 bg-[#E34234] hover:bg-[#C82E18] text-white font-bold text-xs rounded-xl shadow-xs transition"
               >
                 Send Revision Request
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reject Project Invitation Modal */}
+      {rejectModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0A221B]/60 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-[#EADBCE] space-y-4">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 bg-[#FFEAE6] rounded-xl border border-[#FFC7BD]">
+                <AlertCircle className="w-5 h-5 text-[#E34234]" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-[#1C2826]">Reject Project Invitation</h3>
+                <p className="text-xs text-[#5A6860]">Project: {project.title}</p>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[#1C2826] mb-1">
+                Reason for Rejection <span className="font-normal text-[#6A7870]">(Optional)</span>
+              </label>
+              <textarea
+                rows={4}
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Let the freelancer know why you are declining (e.g., budget mismatch, scope changes, timeline)..."
+                className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#EADBCE] rounded-xl text-xs outline-hidden focus:ring-2 focus:ring-[#E34234]"
+              />
+            </div>
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button
+                onClick={() => {
+                  setRejectModalOpen(false);
+                  setRejectionReason('');
+                }}
+                disabled={actionLoading}
+                className="px-4 py-2 text-xs font-bold text-[#5A6860] hover:bg-[#FAF7F2] rounded-xl transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleRejectInvitation}
+                disabled={actionLoading}
+                className="px-5 py-2 bg-[#E34234] hover:bg-[#C82E18] text-white font-bold text-xs rounded-xl shadow-xs transition disabled:opacity-60"
+              >
+                {actionLoading ? 'Rejecting...' : 'Confirm Rejection'}
               </button>
             </div>
           </div>

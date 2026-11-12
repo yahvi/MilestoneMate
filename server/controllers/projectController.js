@@ -275,38 +275,82 @@ export const getProjectById = async (req, res, next) => {
   }
 };
 
+const recordPlanDecisionEffects = async ({ project, user, decision, reason }) => {
+  if (decision === 'approved') {
+    await notificationService.notify({
+      userId: project.freelancerId,
+      title: 'Project Plan Approved!',
+      message: `${user.name} approved the milestone plan for "${project.title}". You can begin work.`,
+      type: 'plan_approval',
+      projectId: project._id,
+    });
+
+    await notificationService.logActivity({
+      projectId: project._id,
+      userId: user._id,
+      action: 'Plan Approved',
+      description: `Client ${user.name} approved the milestone breakdown.`,
+    });
+    return;
+  }
+
+  const reasonSuffix = reason ? ` Reason: "${reason}"` : '';
+  await notificationService.notify({
+    userId: project.freelancerId,
+    title: 'Project Invitation Rejected',
+    message: `${user.name} rejected the project invitation for "${project.title}".${reasonSuffix}`,
+    type: 'plan_rejection',
+    projectId: project._id,
+  });
+
+  await notificationService.logActivity({
+    projectId: project._id,
+    userId: user._id,
+    action: 'Invitation Rejected',
+    description: `Client ${user.name} rejected the project invitation.${reasonSuffix}`,
+  });
+};
+
 export const updateProject = async (req, res, next) => {
   try {
     const projId = req.params.id;
+    const isApproving = req.body.clientApprovedPlan === true;
+    const isRejecting =
+      !isApproving &&
+      (req.body.status === 'Rejected' ||
+        req.body.action === 'reject' ||
+        req.body.clientApprovedPlan === false);
+
+    if ((isApproving || isRejecting) && req.user?.role !== 'client') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only the client can approve or reject a project invitation.',
+      });
+    }
+
+    const reason =
+      typeof req.body.rejectionReason === 'string' ? req.body.rejectionReason.trim() : '';
 
     if (mongoose.connection.readyState === 1) {
       const project = await Project.findById(projId);
       if (!project) return res.status(404).json({ success: false, message: 'Project not found.' });
 
-      if (req.body.clientApprovedPlan !== undefined) {
-        project.clientApprovedPlan = req.body.clientApprovedPlan;
-        if (req.body.clientApprovedPlan) {
-          project.status = 'In Progress';
-          await Milestone.updateMany(
-            { projectId: project._id, status: { $in: ['Draft', 'Awaiting Client Approval'] } },
-            { status: 'Pending' }
-          );
-
-          await notificationService.notify({
-            userId: project.freelancerId,
-            title: 'Project Plan Approved!',
-            message: `${req.user.name} approved the milestone plan for "${project.title}". You can begin work.`,
-            type: 'plan_approval',
-            projectId: project._id,
-          });
-
-          await notificationService.logActivity({
-            projectId: project._id,
-            userId: req.user._id,
-            action: 'Plan Approved',
-            description: `Client ${req.user.name} approved the milestone breakdown.`,
-          });
-        }
+      if (isApproving) {
+        project.clientApprovedPlan = true;
+        project.status = 'In Progress';
+        project.rejectionReason = '';
+        project.rejectedAt = null;
+        await Milestone.updateMany(
+          { projectId: project._id, status: { $in: ['Draft', 'Awaiting Client Approval'] } },
+          { status: 'Pending' }
+        );
+        await recordPlanDecisionEffects({ project, user: req.user, decision: 'approved' });
+      } else if (isRejecting) {
+        project.clientApprovedPlan = false;
+        project.status = 'Rejected';
+        project.rejectionReason = reason;
+        project.rejectedAt = new Date();
+        await recordPlanDecisionEffects({ project, user: req.user, decision: 'rejected', reason });
       }
 
       await project.save();
@@ -316,34 +360,26 @@ export const updateProject = async (req, res, next) => {
       const project = mockDB.projects.find((p) => p._id.toString() === projId.toString());
       if (!project) return res.status(404).json({ success: false, message: 'Project not found.' });
 
-      if (req.body.clientApprovedPlan !== undefined) {
-        project.clientApprovedPlan = req.body.clientApprovedPlan;
-        if (req.body.clientApprovedPlan) {
-          project.status = 'In Progress';
-          mockDB.milestones.forEach((m) => {
-            if (
-              m.projectId.toString() === projId.toString() &&
-              (m.status === 'Draft' || m.status === 'Awaiting Client Approval')
-            ) {
-              m.status = 'Pending';
-            }
-          });
-
-          await notificationService.notify({
-            userId: project.freelancerId,
-            title: 'Project Plan Approved!',
-            message: `${req.user.name} approved the milestone plan for "${project.title}". You can begin work.`,
-            type: 'plan_approval',
-            projectId: project._id,
-          });
-
-          await notificationService.logActivity({
-            projectId: project._id,
-            userId: req.user._id,
-            action: 'Plan Approved',
-            description: `Client ${req.user.name} approved the milestone breakdown.`,
-          });
-        }
+      if (isApproving) {
+        project.clientApprovedPlan = true;
+        project.status = 'In Progress';
+        project.rejectionReason = '';
+        project.rejectedAt = null;
+        mockDB.milestones.forEach((m) => {
+          if (
+            m.projectId.toString() === projId.toString() &&
+            (m.status === 'Draft' || m.status === 'Awaiting Client Approval')
+          ) {
+            m.status = 'Pending';
+          }
+        });
+        await recordPlanDecisionEffects({ project, user: req.user, decision: 'approved' });
+      } else if (isRejecting) {
+        project.clientApprovedPlan = false;
+        project.status = 'Rejected';
+        project.rejectionReason = reason;
+        project.rejectedAt = new Date();
+        await recordPlanDecisionEffects({ project, user: req.user, decision: 'rejected', reason });
       }
 
       return res.json({ success: true, project });

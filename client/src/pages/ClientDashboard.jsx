@@ -101,25 +101,67 @@ export default function ClientDashboard() {
       headerName: 'Status',
       field: 'status',
       flex: 1.2,
-      cellRenderer: (params) => (
-        <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#F0FAF4] text-[#047857] border border-emerald-300">
-          {params.value}
-        </span>
-      ),
+      cellRenderer: (params) => {
+        const val = params.value;
+        const badgeClass =
+          val === 'Rejected'
+            ? 'bg-[#FFEAE6] text-[#E34234] border-[#FFC7BD]'
+            : val === 'Planning' || val === 'Awaiting Client Approval'
+            ? 'bg-amber-50 text-amber-800 border-amber-300'
+            : 'bg-[#F0FAF4] text-[#047857] border-emerald-300';
+        return (
+          <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${badgeClass}`}>
+            {val}
+          </span>
+        );
+      },
     },
     {
       headerName: 'Action',
-      flex: 1,
+      flex: 1.4,
       sortable: false,
       filter: false,
-      cellRenderer: (params) => (
-        <button
-          onClick={() => navigate(`/projects/${params.data._id}`)}
-          className="px-3 py-1 bg-[#E34234] hover:bg-[#C82E18] text-white font-bold text-xs rounded-lg transition shadow-2xs"
-        >
-          Review &amp; Pay
-        </button>
-      ),
+      cellRenderer: (params) => {
+        const isPendingInvitation = !params.data.clientApprovedPlan && params.data.status !== 'Rejected';
+        if (isPendingInvitation) {
+          return (
+            <div className="flex items-center gap-1.5">
+              <button
+                onClick={() => navigate(`/projects/${params.data._id}`)}
+                className="px-2.5 py-1 bg-[#047857] hover:bg-[#065F46] text-white font-bold text-xs rounded-lg transition shadow-2xs"
+              >
+                Review
+              </button>
+              <button
+                onClick={() => navigate(`/projects/${params.data._id}?action=reject`)}
+                className="px-2.5 py-1 bg-[#FFEAE6] hover:bg-[#E34234] text-[#E34234] hover:text-white border border-[#FFC7BD] font-bold text-xs rounded-lg transition"
+              >
+                Reject
+              </button>
+            </div>
+          );
+        }
+
+        if (params.data.status === 'Rejected') {
+          return (
+            <button
+              onClick={() => navigate(`/projects/${params.data._id}`)}
+              className="px-3 py-1 bg-[#F2ECE1] hover:bg-[#EADBCE] text-[#3D4C44] font-bold text-xs rounded-lg transition"
+            >
+              View Details
+            </button>
+          );
+        }
+
+        return (
+          <button
+            onClick={() => navigate(`/projects/${params.data._id}`)}
+            className="px-3 py-1 bg-[#E34234] hover:bg-[#C82E18] text-white font-bold text-xs rounded-lg transition shadow-2xs"
+          >
+            Review &amp; Pay
+          </button>
+        );
+      },
     },
   ];
 

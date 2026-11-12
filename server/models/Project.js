@@ -54,12 +54,20 @@ const projectSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['Draft', 'Planning', 'Awaiting Client Approval', 'In Progress', 'Completed', 'On Hold'],
+      enum: ['Draft', 'Planning', 'Awaiting Client Approval', 'In Progress', 'Completed', 'On Hold', 'Rejected'],
       default: 'Draft',
     },
     clientApprovedPlan: {
       type: Boolean,
       default: false,
+    },
+    rejectionReason: {
+      type: String,
+      default: '',
+    },
+    rejectedAt: {
+      type: Date,
+      default: null,
     },
   },
   {

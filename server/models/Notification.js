@@ -23,6 +23,7 @@ const notificationSchema = new mongoose.Schema(
         'info',
         'project_invite',
         'plan_approval',
+        'plan_rejection',
         'submission',
         'revision_request',
         'milestone_approval',

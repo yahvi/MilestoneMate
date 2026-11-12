@@ -26,6 +26,7 @@ export default function NotificationBell() {
       case 'milestone_approval':
       case 'plan_approval':
         return <CheckCircle2 className="w-4 h-4 text-[#047857]" />;
+      case 'plan_rejection':
       case 'revision_request':
       case 'deadline_warning':
       case 'overdue':
